@@ -1,5 +1,5 @@
 # CombinationTool
----
+
 ## Idea:
 Tool to constrain the parameters of physics models using Bayesian inference by combining measurements of (different) observables. Especially suitable for EFT models. Bayesian inference is performed using the <a target="_blank" href="https://github.com/bat/BAT.jl">*Bayesian Analysis Toolkit - BAT.jl*</a>.
 
@@ -8,16 +8,11 @@ The likelihood used in the CombinationTool is based on the
 
 *  **Assumption**: Measurements of physical quantities are approximately gaussian. This allows to combine the measurements using the following likelihood:
 
-<img src="http://latex2png.com/pngs/9fcbfbebe11bc63f39c64ac44e6bf790.png" width="1000" height="55" />
-
-* **Likelihood**:
-
-   <img src="http://latex2png.com/output//latex_9bcf1dbba64bc349f0c0d81e817d269c.png" width="600" height="65" />
+<img src="http://latex2png.com/pngs/9fcbfbebe11bc63f39c64ac44e6bf790.png" width="450" height="55" />
 
 with the **covariance matrix**:
 
-  <img src="http://latex2png.com/pngs/5ceee38a8fa4eefd3b91ec36ce075746.png" width="550" height="65" />
-
+ <img src="http://latex2png.com/pngs/5ceee38a8fa4eefd3b91ec36ce075746.png" width="350" height="55" />
 
 
 ## Input needed:
@@ -26,7 +21,7 @@ with the **covariance matrix**:
 * **Correlations:** Correlation matrices for all types of uncertainties
 
 
-## Current structure of the Julia package *EFTfitter_julia.jl*
+## Current structure of the code:
 * /
   * *runCombinationTool.jl:* Main routine for performing a run of the CombinationTool
   * *inputs.jl:* Input file. Providing observables, measurements, uncertainties and correlations.
