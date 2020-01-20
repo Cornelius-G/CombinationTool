@@ -45,6 +45,6 @@ function combinemeasurements(
         result += 0.5 * r1 * invcov[i,i] * r1
     end
     
-    final_result::Float64 = -result - log((2*π)^(0.5*nmeas) * sqrtdetcov) 
+    final_result::Float64 = -result #- log((2*π)^(0.5*nmeas) * sqrtdetcov) TODO:delete factor?
     return  final_result
 end
