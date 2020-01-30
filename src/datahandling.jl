@@ -5,6 +5,7 @@ export Observable
 export Uncertainties
 export Correlation
 export createmodel
+export ObservableBlock
 
 using FunctionWrappers
 import FunctionWrappers: FunctionWrapper
@@ -16,10 +17,16 @@ struct RealRealFunc
 end
 (cb::RealRealFunc)(v) = cb.f(v)
 
+struct ObservableBlock
+    f::Function
+    ObsandCoeffs::NamedTuple
+end
+
 
 struct Model
     observable_names::Vector{String}
     observable_functions::Vector{RealRealFunc}
+    observable_blocks::Array{ObservableBlock}
 
     measurement_names::Vector{String}
     measurement_observables::Vector{Int}
@@ -33,13 +40,22 @@ struct Model
 end
 
 
+
 struct Observable
     name::String
     func::Function
+    coeff::Array{Real}
     # TODO min::Real
     # TODO max::Real
 end
 
+function Observable(
+    name::String,
+    func::Function
+    )
+    
+    Observable(name, func, [])
+end
 
 struct Measurement
     name::String
@@ -85,14 +101,17 @@ function createmodel(
     correlations::AbstractArray{Correlation}
 )
 
-    observable_names, observable_functions = createobservables(observables)
+    observable_names, observable_functions, unique_funcs = createobservables(observables)
 
     measurement_names, measurement_observables, measurement_values, active_measurements = createmeasurements(measurements, observable_names)
+
+    observable_block = createblock(unique_funcs,observables,measurement_observables)
 
     uncertainty_names, uncertainties, correlationmatrices = createuncertainties(measurements, correlations, active_measurements)
 
     Model(observable_names,
             observable_functions,
+            observable_block,
             measurement_names,
             measurement_observables,
             measurement_values,
@@ -102,6 +121,28 @@ function createmodel(
             correlationmatrices)
 end
 
+function createblock(unique_funcs::Vector{Function},observables::AbstractArray{Observable},measuredobs::Vector{Int})
+
+    nunique_funcs = length(unique_funcs)
+    blocks = Array{ObservableBlock}(undef,nunique_funcs)
+
+
+    for i_unique_function in 1:nunique_funcs
+        nobs = sum([observables[i].func == unique_funcs[i_unique_function] for i in measuredobs])
+        names = Vector{String}(undef, nobs)
+        coeffs = Vector{Array{Real}}(undef,nobs)
+        i_obs = 1
+        for i in measuredobs
+            if(observables[i].func == unique_funcs[i_unique_function])
+                names[i_obs] = observables[i].name
+                coeffs[i_obs] = observables[i].coeff
+                i_obs += 1
+            end
+        end
+        blocks[i_unique_function] = ObservableBlock(unique_funcs[i_unique_function],(Names = names, Coeff = coeffs))
+    end
+    blocks
+end
 
 
 function createobservables(observables::AbstractArray{Observable})
@@ -109,18 +150,26 @@ function createobservables(observables::AbstractArray{Observable})
 
     names = Vector{String}(undef, nobs)
     funcs = Vector{RealRealFunc}(undef, nobs)
+    
 
-    for i in 1:nobs
-        names[i] = observables[i].name
-        funcs[i] = RealRealFunc(observables[i].func)
+    unique_funcs = convert(Array{Function,1},unique([observables[i].func for i in 1:nobs]))
+
+    for j in unique_funcs
+        for k in 1:nobs 
+            if observables[k].func == j
+                names[k]  = observables[k].name
+                funcs[k]  = RealRealFunc(observables[k].func)
+            end
+        end
     end
+    
 
     duplicates = findfirstduplicate(names)
     if(duplicates[1])
         throw(ArgumentError("Observable with the name \"" * duplicates[2] * "\" already exists."))
     end
 
-    names, funcs
+    names, funcs, unique_funcs
 end
 
 
@@ -140,12 +189,7 @@ function createmeasurements(
 
     nmeas = length(measurements)
 
-    nactives=0
-    for i in 1:nmeas
-        if(measurements[i].activity)
-            nactives += 1
-        end
-    end
+    nactives=sum([measurements[i].activity for i in 1:nmeas])
 
     names = Vector{String}(undef,  nactives)
     measuredobs = Vector{Int}(undef, nactives)
@@ -162,6 +206,12 @@ function createmeasurements(
             measuredobs[a] = getobservableindex(measurements[i].obs, observable_names)
         end
     end
+
+    sort_pattern = sortperm(measuredobs)
+    names = names[sort_pattern]
+    values = values[sort_pattern]
+    actives = actives[sort_pattern]
+    sort!(measuredobs)
 
     names, measuredobs, values, actives
 end
