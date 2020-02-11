@@ -23,6 +23,17 @@ function calculate_covariancematrix(
     return covariance
 end
 
+function eval_block_array(params,BA::Array{ObservableBlock})
+    vcat(eval_block.(Ref(params),BA)...)
+end
+
+function eval_block(params,B::ObservableBlock)
+    if(B.ObsandCoeffs.Coeff == [[] for i in 1:length(B.ObsandCoeffs.Coeff)])
+        vcat(B.f.(Ref(params))...)
+    else
+        vcat(B.f.(Ref(params),B.ObsandCoeffs.Coeff)...)
+    end
+end
 
 
 function combinemeasurements(
@@ -35,16 +46,10 @@ function combinemeasurements(
     result::Float64=0.0
 
     nmeas=length(m.measurement_values)
-
-    for i in 1:nmeas
-        r1 = m.measurement_values[i] - m.observable_functions[m.measurement_observables[i]].f.obj.x(parameters)[1]
-        for j in (i+1):nmeas
-            r2 = m.measurement_values[j] - m.observable_functions[m.measurement_observables[j]].f.obj.x(parameters)[1]
-            result += r1 * invcov[i,j] * r2
-        end
-        result += 0.5 * r1 * invcov[i,i] * r1
-    end
     
-    final_result::Float64 = -result #- log((2*π)^(0.5*nmeas) * sqrtdetcov) TODO:delete factor?
+    r1 = eval_block_array(parameters,m.observable_blocks) - m.measurement_values
+    
+    final_result = -0.5 * transpose(r1)* invcov * r1
+    
     return  final_result
 end
