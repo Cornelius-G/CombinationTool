@@ -34,10 +34,10 @@ import CombinationTool.combinemeasurements
         covariance=calculate_covariancematrix(m.uncertainties, m.correlationmatrices)
         sqrtdetcov=sqrt(abs(det(covariance)))
 
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.694, 1.15]), digits=8) == -378.39538456
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [1, -2]), digits=8) == -76.60793989
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [-3.2, 5.02]), digits=8) == -18.78937978
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [-6, 0.01]), digits=8) == -30805.18839943
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.694, 1.15]), digits=8) == -373.40688529
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [1, -2]), digits=8) == -71.61944062
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [-3.2, 5.02]), digits=8) == -13.80088051
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [-6, 0.01]), digits=8) == -30800.19990017
         @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [28.3, -21.2]), digits=8) ≈ -8.36405819e9
     end;
 
@@ -83,10 +83,10 @@ import CombinationTool.combinemeasurements
         sqrtdetcov=sqrt(abs(det(covariance)))
 
         # comparison with EFTfitter v1.03
-        @test @time round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.694, 1.15]), digits=4) == -271.4695 # cross checked by calculation per hand
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [2.611,1.952]), digits=4) == -14.3586
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.277, 1.68]), digits=4) == -68.4474
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.139, 1.008]), digits=4) == -46.5576
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.694, 1.15]), digits=4) == -264.3656
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [2.611,1.952]), digits=4) == -7.2546
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.277, 1.68]), digits=4) == -61.3434
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.139, 1.008]), digits=4) == -39.4537
 
     end;
 
@@ -122,10 +122,10 @@ import CombinationTool.combinemeasurements
         covariance=calculate_covariancematrix(m.uncertainties, m.correlationmatrices)
         sqrtdetcov=sqrt(abs(det(covariance)))
 
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.694, 1.15]), digits=8) == -378.39538456
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [1, -2]), digits=8) == -76.60793989
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [-3.2, 5.02]), digits=8) == -18.78937978
-        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [-6, 0.01]), digits=8) == -30805.18839943
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [3.694, 1.15]), digits=8) == -373.40688529
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [1, -2]), digits=8) == -71.61944062
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [-3.2, 5.02]), digits=8) == -13.80088051
+        @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [-6, 0.01]), digits=8) == -30800.19990017
         @test round(combinemeasurements(m, inv(covariance), sqrtdetcov, [28.3, -21.2]), digits=8) ≈ -8.36405819e9
     end;
 
