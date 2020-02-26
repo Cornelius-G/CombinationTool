@@ -1,6 +1,4 @@
 import Compat.Test
-
-push!(LOAD_PATH, "1_BAT2.0")
 using CombinationTool
 
 

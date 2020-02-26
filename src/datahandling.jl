@@ -53,7 +53,7 @@ function Observable(
     name::String,
     func::Function
     )
-    
+
     Observable(name, func, [])
 end
 
@@ -121,7 +121,7 @@ function createmodel(
             correlationmatrices)
 end
 
-function createblock(unique_funcs::Vector{Function},observables::AbstractArray{Observable},measuredobs::Vector{Int})
+function createblock(unique_funcs::Vector{Function}, observables::AbstractArray{Observable}, measuredobs::Vector{Int})
 
     nunique_funcs = length(unique_funcs)
     blocks = Array{ObservableBlock}(undef,nunique_funcs)
@@ -150,19 +150,19 @@ function createobservables(observables::AbstractArray{Observable})
 
     names = Vector{String}(undef, nobs)
     funcs = Vector{RealRealFunc}(undef, nobs)
-    
+
 
     unique_funcs = convert(Array{Function,1},unique([observables[i].func for i in 1:nobs]))
 
     for j in unique_funcs
-        for k in 1:nobs 
+        for k in 1:nobs
             if observables[k].func == j
                 names[k]  = observables[k].name
                 funcs[k]  = RealRealFunc(observables[k].func)
             end
         end
     end
-    
+
 
     duplicates = findfirstduplicate(names)
     if(duplicates[1])
