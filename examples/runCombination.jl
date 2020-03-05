@@ -4,8 +4,8 @@ using LinearAlgebra
 using ValueShapes
 using IntervalSets
 using Plots
+using FunctionWrappers
 
-push!(LOAD_PATH, "1_BAT2.0")
 using CombinationTool
 
 include("inputs.jl")
